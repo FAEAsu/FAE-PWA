@@ -1,9 +1,12 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 
 export default function LoginPage() {
+  const router = useRouter()
+
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -12,30 +15,45 @@ export default function LoginPage() {
     e.preventDefault()
     setError("")
 
-    console.log("URL =", process.env.NEXT_PUBLIC_SUPABASE_URL)
-    console.log(
-      "KEY START =",
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.slice(0, 20)
-    )
-
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      console.log("LOGIN DATA =", data)
-      console.log("LOGIN ERROR =", error)
-
       if (error) {
         setError(error.message)
         return
       }
 
-      alert("Login OK")
+      const userId = data.user?.id
+
+      if (!userId) {
+        setError("Utilisateur introuvable")
+        return
+      }
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .maybeSingle()
+
+      if (profileError) {
+        console.error(profileError)
+        setError("Erreur profil")
+        return
+      }
+
+      if (!profile) {
+        setError("Profil introuvable")
+        return
+      }
+
+      router.push("/dashboard")
     } catch (err) {
-      console.error("FULL ERROR =", err)
-      setError("Failed to fetch")
+      console.error(err)
+      setError("Erreur réseau")
     }
   }
 
