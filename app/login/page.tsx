@@ -21,6 +21,9 @@ export default function LoginPage() {
         password,
       })
 
+      console.log("LOGIN DATA:", data)
+      console.log("LOGIN ERROR:", error)
+
       if (error) {
         setError(error.message)
         return
@@ -39,8 +42,10 @@ export default function LoginPage() {
         .eq("id", userId)
         .maybeSingle()
 
+      console.log("PROFILE:", profile)
+      console.log("PROFILE ERROR:", profileError)
+
       if (profileError) {
-        console.error(profileError)
         setError("Erreur profil")
         return
       }
@@ -52,8 +57,8 @@ export default function LoginPage() {
 
       router.push("/dashboard")
     } catch (err) {
-      console.error(err)
-      setError("Erreur réseau")
+      console.error("FULL ERROR:", err)
+      setError("Failed to fetch")
     }
   }
 
