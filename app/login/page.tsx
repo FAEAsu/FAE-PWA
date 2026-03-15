@@ -1,12 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 
 export default function LoginPage() {
-  const router = useRouter()
-
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -16,6 +13,13 @@ export default function LoginPage() {
     setError("")
 
     try {
+      const health = await fetch(
+        "https://lbuceegfaxgtsipdbclo.supabase.co/auth/v1/health"
+      )
+      const healthText = await health.text()
+      console.log("HEALTH STATUS =", health.status)
+      console.log("HEALTH BODY =", healthText)
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -29,33 +33,7 @@ export default function LoginPage() {
         return
       }
 
-      const userId = data.user?.id
-
-      if (!userId) {
-        setError("Utilisateur introuvable")
-        return
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .maybeSingle()
-
-      console.log("PROFILE:", profile)
-      console.log("PROFILE ERROR:", profileError)
-
-      if (profileError) {
-        setError("Erreur profil")
-        return
-      }
-
-      if (!profile) {
-        setError("Profil introuvable")
-        return
-      }
-
-      router.push("/dashboard")
+      alert("Login OK")
     } catch (err) {
       console.error("FULL ERROR:", err)
       setError("Failed to fetch")
@@ -83,7 +61,7 @@ export default function LoginPage() {
           padding: 24,
         }}
       >
-        <h1 style={{ marginBottom: 20 }}>Connexion a l'app</h1>
+        <h1 style={{ marginBottom: 20 }}>Connexion à l'app FAE</h1>
 
         <input
           type="email"
