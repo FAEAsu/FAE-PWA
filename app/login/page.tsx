@@ -161,7 +161,7 @@ export default function LoginPage() {
             margin: "0 auto",
           }}
         >
-          <h1 style={{ marginBottom: 20 }}>Connexion à l'app V2</h1>
+          <h1 style={{ marginBottom: 20 }}>Connexion à l'app V3</h1>
 
           <input
             type="email"
