@@ -83,7 +83,7 @@ export default function LoginPage() {
           padding: 24,
         }}
       >
-        <h1 style={{ marginBottom: 20 }}>Connexion</h1>
+        <h1 style={{ marginBottom: 20 }}>Connexion a l'app</h1>
 
         <input
           type="email"
